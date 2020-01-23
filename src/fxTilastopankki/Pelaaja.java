@@ -1,7 +1,7 @@
 /**
  * 
  */
-package tilastopankki;
+package fxTilastopankki;
 
 
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package tilastopankki;
+package fxTilastopankki;
 
 import java.io.File;
 import java.io.FileNotFoundException;
