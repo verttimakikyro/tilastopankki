@@ -1,0 +1,23 @@
+Pelaajat
+;Kenttien järjestys tiedostossa on seuraava:
+;sukunimi etunimi		|ottelut	|maalit		|syotot		|plusmiinus		|jaahyminuutit	|
+1 |Veto Akseli			|20			|1			|3			|-27			|13				|
+1 |Maki Kyy				|19			|38			|1			|0				|28				|
+1 |Immobile Sauli		|20			|0			|12			|-10			|25				|
+1 |Nott Kott			|10			|1			|0			|-30			|0				|
+1 |Marka Hessu			|13			|8			|8			|8				|8				|
+1 |Veeti Joonas			|20			|1			|1			|-28			|0				|
+1 |Reppu Eero			|19			|10			|8			|-25			|17				|
+1 |Jumi Kasperi			|20			|1			|9			|-22			|2				|
+2 |Paalliko Meloni		|16			|5			|6			|12				|22				|
+2 |Sauna Peksi			|20			|11			|8			|15				|4				|
+2 |Tippa Vee			|17			|9			|11			|-1				|9				|
+2 |Tiini Niko			|18			|5			|6			|6				|0				|
+2 |Pardi Leo			|9			|15			|17			|-3				|12				|
+2 |Putki Kauko			|19			|21			|11			|11				|2				|
+3 |Koyri Pentti			|18			|3			|4			|8				|10				|
+3 |Jarvela Pera			|19			|21			|3			|11				|12				|
+3 |Jofa Pallo			|20			|5			|12			|10				|8				|
+3 |Salami Teukka		|19			|2			|5			|20				|2				|
+3 |Kammola Kulervo		|14			|19			|11			|16				|0				|
+3 |Miitelainen Paxu		|20			|20			|8			|21				|0				|
