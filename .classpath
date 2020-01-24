@@ -7,5 +7,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/vertt/OneDrive/Tiedostot/Opiskelu/ohj2/Ali.jar"/>
+	<classpathentry kind="lib" path="C:/Users/vertt/Downloads/fxgui.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

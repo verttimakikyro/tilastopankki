@@ -29,7 +29,8 @@ public class Main extends Application{
 			tilastopankkiCtrl.setJoukkueet(joukkueet);
 			
 			primaryStage.show();
-			//tilastopankkiCtrl.lueTiedosto();
+			tilastopankkiCtrl.lueTiedosto();
+			tilastopankkiCtrl.haeJoukkueet();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

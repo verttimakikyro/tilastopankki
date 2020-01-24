@@ -5,6 +5,8 @@ package fxTilastopankki;
 
 
 
+import java.io.PrintStream;
+
 import fi.jyu.mit.ohj2.Mjonot;
 
 /**
@@ -41,6 +43,10 @@ public class Pelaaja {
 		this.plusmiinus = plusmiinus;
 		this.ottelut = ottelut;
 		this.pisteet = maalit + syotot;
+	}
+	
+	public String getNimi() {
+		return nimi;
 	}
 	
 	/**
@@ -86,9 +92,13 @@ public class Pelaaja {
 		return id + "|" + nimi + "|" + ottelut + "|" + maalit + "|" + syotot + "|" + plusmiinus + "|" + jaahyt + "|";
 	}
 	
-	public void tulosta() {
-		System.out.println(nimi + " Ottelut: " + ottelut + " Maalit: " + maalit + " Syötöt: " + syotot + " Pisteet: " + pisteet
-				+ " Plus/miinus " +  plusmiinus + " Jäähyt " + jaahyt);
+	public void tulosta(PrintStream out) {
+		out.println("Nimi : " + nimi);
+		out.println("Maalit : " + maalit);
+		out.println("Syötöt : " + syotot);
+		out.println("Pisteet : " + pisteet);
+		out.println("Plus/Miinus : " + plusmiinus);
+		out.println("Jäähyminuutit : " + jaahyt);	
 	}
 
 	/**

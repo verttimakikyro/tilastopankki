@@ -9,27 +9,25 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-
-<BorderPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" prefHeight="439.0" prefWidth="698.0" fx:controller="fxTilastopankki.TilastopankkiGUIController">
+<BorderPane prefHeight="439.0" prefWidth="698.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxTilastopankki.TilastopankkiGUIController">
    <bottom>
       <HBox prefHeight="50.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#lisaaJoukkue" text="Lisää joukkue">
+            <Button mnemonicParsing="false" text="Lisää joukkue">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#lisaaPelaaja" text="Lisää pelaaja">
+            <Button mnemonicParsing="false" onAction="#handleLisaaPelaaja" text="Lisää pelaaja">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#Muokkaa" text="Muokkaa">
+            <Button mnemonicParsing="false" text="Muokkaa">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
@@ -61,7 +59,7 @@
    <left>
       <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <bottom>
-            <ListChooser fx:id="chooserJoukkueet" BorderPane.alignment="CENTER" />
+            <ListChooser fx:id="chooserJoukkueet" rivit="" BorderPane.alignment="CENTER" />
          </bottom>
          <center>
             <Label text="Joukkueet" BorderPane.alignment="CENTER" />
@@ -75,20 +73,16 @@
                   <TextField BorderPane.alignment="CENTER" />
                </center>
                <bottom>
-                  <ComboBoxChooser prefHeight="25.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                  <ComboBoxChooser prefHeight="25.0" prefWidth="200.0" rivit="testi" BorderPane.alignment="CENTER" />
                </bottom>
             </BorderPane>
          </top>
       </BorderPane>
    </left>
    <center>
-      <ListChooser fx:id="chooserPelaajat" BorderPane.alignment="CENTER" />
+      <ListChooser fx:id="chooserPelaajat" rivit="" BorderPane.alignment="CENTER" />
    </center>
    <right>
-      <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <content>
-            <TextArea prefHeight="200.0" prefWidth="200.0" />
-         </content>
-      </ScrollPane>
+      <ScrollPane fx:id="panelPelaajat" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </right>
 </BorderPane>

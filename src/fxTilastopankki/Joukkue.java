@@ -98,8 +98,17 @@ public class Joukkue {
 			pelaaja.tulosta();
 		}
 	}
+	
+	
 
 
+
+	/**
+	 * @return the pelaajat
+	 */
+	public ArrayList<Pelaaja> getPelaajat() {
+		return pelaajat;
+	}
 
 	/**
 	 * @param args
