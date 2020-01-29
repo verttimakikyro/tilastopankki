@@ -4,9 +4,6 @@
 package fxTilastopankki;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -62,7 +59,7 @@ public class Joukkue {
 		try (Scanner lukija = new Scanner(new File("pelaajat.dat"))) {
 			while (lukija.hasNextLine()) {
 				String rivi = lukija.nextLine();
-				if (rivi.charAt(0) == ';') continue; 
+				//if (rivi.charAt(0) == ';') continue; 
 				Pelaaja pelaaja = new Pelaaja();
 				pelaaja.parse(rivi);
 				if(pelaaja.getId() == this.id) pelaajat.add(pelaaja);
@@ -71,40 +68,28 @@ public class Joukkue {
 	
 	}
 	
+	/**
+	 * Erottaa merkkirivist‰ joukkueen id-numeron ja nimen
+	 * @param rivi, merkkirivi, josta id-numero ja nimi erotellaan
+	 */
 	public void parse(String rivi) {
 		StringBuffer sb = new StringBuffer(rivi);
 		id = Mjonot.erota(sb, '|', id);
 		nimi = Mjonot.erota(sb, '|', nimi);
 	}
 	
-	public void tallenna() throws FileNotFoundException, UnsupportedEncodingException {
-		PrintWriter writer = new PrintWriter("pelaajat.dat", "UTF-8");
-		writer.println(";Kenttien j√§rjestys tiedostossa on seuraava:");
-		writer.println(";sukunimi etunimi		|ottelut	|maalit		|syotot		|plusmiinus		|jaahyminuutit	|");
+
+	public String tallennaPelaajat()  {
+		StringBuilder pelaajatTekstina = new StringBuilder();
 		for(Pelaaja pelaaja : pelaajat) {
-			writer.println(pelaaja.toString());
+			pelaajatTekstina.append(pelaaja.toString());
 		}
-		writer.close();
+		return pelaajatTekstina.toString();
 	}
 	
 	
-
 	/**
-	 * Metodi pelaajalistan tulostamiseksi
-	 */
-	public void tulosta() {
-		System.out.println(this.nimi);	
-		for(Pelaaja pelaaja : pelaajat) {
-			pelaaja.tulosta();
-		}
-	}
-	
-	
-
-
-
-	/**
-	 * @return the pelaajat
+	 * @return Palauttaa listan joukkueen pelaajista
 	 */
 	public ArrayList<Pelaaja> getPelaajat() {
 		return pelaajat;
@@ -131,5 +116,30 @@ public class Joukkue {
 	public void setNimi(String nimi) {
 		this.nimi = nimi;
 	}
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Joukkue other = (Joukkue) obj;
+		if (id != other.id)
+			return false;
+		if (nimi == null) {
+			if (other.nimi != null)
+				return false;
+		} else if (!nimi.equals(other.nimi))
+			return false;
+		return true;
+	}
+	
+	
 
 }

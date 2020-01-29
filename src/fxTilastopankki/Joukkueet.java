@@ -17,6 +17,7 @@ import java.util.Scanner;
 public class Joukkueet {
 	
 	private ArrayList<Joukkue> joukkueet = new ArrayList<>();
+	private int nextID;
 	
 	public void lueTiedosto() throws FileNotFoundException {
 		try (Scanner lukija = new Scanner(new File("joukkueet.dat"))) {
@@ -33,7 +34,9 @@ public class Joukkueet {
 
 	
 	public int seuraavaId() {
-		return joukkueet.size() + 1;
+		if(joukkueet.isEmpty()) nextID = 1;
+		else nextID = joukkueet.get(joukkueet.size() -1).getId() + 1;
+		return nextID;
 	}
 	
 	public void uusiJoukkue(String nimi) {
@@ -58,24 +61,25 @@ public class Joukkueet {
 		return joukkueet;
 	}
 	
-	public void tallenna() throws FileNotFoundException, UnsupportedEncodingException {
+	public void tallennaJoukkue() throws FileNotFoundException, UnsupportedEncodingException {
 		PrintWriter writer = new PrintWriter("joukkueet.dat", "UTF-8");
 		writer.println(";Joukkueet");
 		for(Joukkue joukkue : joukkueet) {
 			writer.println(joukkue.getId() + "|" + joukkue.getNimi() + "|");
-			joukkue.tallenna();
 		}
 		writer.close();
 	}
 	
-	public void tulosta() {
+	public void tallennaPelaajat() throws FileNotFoundException, UnsupportedEncodingException {
+		StringBuilder sb = new StringBuilder();
 		for(Joukkue joukkue : joukkueet) {
-			joukkue.tulosta();
-			System.out.println();
+			sb.append(joukkue.tallennaPelaajat());
 		}
+		PrintWriter writer = new PrintWriter("pelaajat.dat", "UTF-8");
+		writer.println(sb.toString());
+		writer.close();
 	}
-
-
+	
 
 	/**
 	 * @param args
