@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import fi.jyu.mit.fxgui.ListChooser;
 import fi.jyu.mit.fxgui.TextAreaOutputStream;
@@ -27,6 +28,7 @@ public class TilastopankkiGUIController implements Initializable {
 	@FXML private ListChooser<Joukkue> chooserJoukkueet;
 	@FXML private ScrollPane panelPelaajat;
 	@FXML private TextField textfieldJoukkue;
+	@FXML private TextField textHakuehto;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -35,6 +37,10 @@ public class TilastopankkiGUIController implements Initializable {
 	
 	@FXML private void handleLisaaPelaaja() {
 		uusiPelaaja();
+	}
+	
+	@FXML private void handleMuokkaaPelaajaa() {
+		muokkaaPelaajaa();
 	}
 	
 	@FXML private void handlePoistaPelaaja() {
@@ -49,8 +55,9 @@ public class TilastopankkiGUIController implements Initializable {
 		poistaJoukkue();
 	}
 	
-
-	
+	@FXML private void handleHae() {
+		etsiPelaaja(textHakuehto.getText());
+	}
 	
 	
 //==================================================//
@@ -127,6 +134,24 @@ public class TilastopankkiGUIController implements Initializable {
 		}
 	}
 	
+	private void muokkaaPelaajaa() {
+		pelaajaKohdalla = chooserPelaajat.getSelectedObject();
+		if(pelaajaKohdalla == null) return;
+		
+		Pelaaja muokattu = new Pelaaja();
+		muokattu = MuokkaaPelaajaaController.naytaPelaaja(null, pelaajaKohdalla);
+		
+		for(Joukkue joukkue : joukkueet.getJoukkueet()) {
+			for(Pelaaja pelaaja : joukkue.getPelaajat()) {
+				if(pelaaja.equals(pelaajaKohdalla)) {
+					pelaaja = muokattu;
+					break;
+				}
+			}
+		}
+		haePelaajat();
+	}
+	
 	private void uusiPelaaja() {
 		joukkueKohdalla = chooserJoukkueet.getSelectedObject();
 		if (joukkueKohdalla == null) return;
@@ -173,6 +198,19 @@ public class TilastopankkiGUIController implements Initializable {
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	public void etsiPelaaja(String hakuehto) {
+		ArrayList<Pelaaja> pelaajat = new ArrayList<>();
+		for(Joukkue joukkue : joukkueet.getJoukkueet()) {
+			for(Pelaaja pelaaja : joukkue.getPelaajat()) {
+				if(pelaaja.getNimi().contains(hakuehto)) pelaajat.add(pelaaja);
+			}
+		}
+		chooserPelaajat.clear();
+		for(Pelaaja pelaaja : pelaajat) {
+			chooserPelaajat.add(pelaaja.getNimi(), pelaaja);
 		}
 	}
 	

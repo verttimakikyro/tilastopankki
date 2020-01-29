@@ -37,7 +37,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" text="Muokkaa">
+            <Button mnemonicParsing="false" onAction="#handleMuokkaaPelaajaa" text="Muokkaa">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
@@ -80,7 +80,7 @@
                   <Label text="Hae" BorderPane.alignment="CENTER" />
                </top>
                <center>
-                  <TextField BorderPane.alignment="CENTER" />
+                  <TextField fx:id="textHakuehto" onInputMethodTextChanged="#handleHae" onKeyTyped="#handleHae" BorderPane.alignment="CENTER" />
                </center>
                <bottom>
                   <ComboBoxChooser prefHeight="25.0" prefWidth="200.0" rivit="testi" BorderPane.alignment="CENTER" />

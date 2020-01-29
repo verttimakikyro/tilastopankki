@@ -105,6 +105,43 @@ public class Pelaaja {
 	public int getId() {
 		return id;
 	}
+	
+	
+
+	/**
+	 * @return the maalit
+	 */
+	public int getMaalit() {
+		return maalit;
+	}
+
+	/**
+	 * @return the syotot
+	 */
+	public int getSyotot() {
+		return syotot;
+	}
+
+	/**
+	 * @return the jaahyt
+	 */
+	public int getJaahyt() {
+		return jaahyt;
+	}
+
+	/**
+	 * @return the plusmiinus
+	 */
+	public int getPlusmiinus() {
+		return plusmiinus;
+	}
+
+	/**
+	 * @return the ottelut
+	 */
+	public int getOttelut() {
+		return ottelut;
+	}
 
 	/**
 	 * @param id the id to set
