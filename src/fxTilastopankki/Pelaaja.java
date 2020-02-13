@@ -24,26 +24,12 @@ public class Pelaaja {
 	private int ottelut;
 	private int id;
 
-	
-	
+		
 	/**
-	 * @param nimi
-	 * @param maalit
-	 * @param syotot
-	 * @param jaahyt
-	 * @param plusmiinus
-	 * @param ottelut
+	 * Muodostaja tyhjälle pelaajalla, jonka tiedot täytetään käyttöliittymässä
 	 */
-	public Pelaaja(String nimi, int maalit, int syotot, int jaahyt, int plusmiinus, int ottelut) {
-
-		this.nimi = nimi;
-		this.maalit = maalit;
-		this.syotot = syotot;
-		this.jaahyt = jaahyt;
-		this.plusmiinus = plusmiinus;
-		this.ottelut = ottelut;
-		this.pisteet = maalit + syotot;
-
+	public Pelaaja() {
+		
 	}
 	
 	/**
@@ -150,13 +136,18 @@ public class Pelaaja {
 		this.id = id;
 	}
 
-	public Pelaaja() {
-		
-	}
 	
 	/**
-	 * Luetaan tiedostosta pelaajat rivi kerrallaan
+	 * Luetaan tiedostosta pelaajan tiedot rivi kerrallaan
 	 * @param rivi Pelaajan tiedot
+	 * 
+	 * @example
+	 * <pre name="test">
+	 * Pelaaja pelaaja = new Pelaaja();
+	 * pelaaja.parse("1|test|1|1|1|1|1|1|");
+	 * pelaaja.toString().equals("1|test|1|1|1|1|1|1|");
+	 * 
+	 * </pre>
 	 */
 	public void parse(String rivi) {
 		StringBuffer sb = new StringBuffer(rivi);
@@ -170,17 +161,42 @@ public class Pelaaja {
 		ottelut = Mjonot.erota(sb, '|', ottelut);
 	}
 	
+	public void testiTiedot() {
+		this.nimi = "testi";
+		this.maalit = 1;
+		this.syotot = 1;
+		this.pisteet = this.maalit + this.syotot;
+		this.jaahyt = 1;
+		this.plusmiinus = 1;
+		this.ottelut = 1;
+		this.id = 1;
+	}
+	
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+	/**
+	 * Tulostus pelaajan tietojen tallennusta varten
+	 * 
+	 * @example
+	 * <pre name="test">
+	 * Pelaaja pelaaja = new Pelaaja();
+	 * pelaaja.parse("1|test|1|1|1|1|1|1|");
+	 * pelaaja.toString().startsWith("1|test|1") === true;
+	 * 
+	 * </pre>
 	 */
 	@Override
 	public String toString() {
-		return id + "|" + nimi + "|" + ottelut + "|" + maalit + "|" + syotot + "|" + plusmiinus + "|" + jaahyt + "|" + "\n";
+		return id + "|" + nimi + "|" + ottelut + "|" + maalit + "|" + syotot + "|" + plusmiinus + "|" + jaahyt + "|";
 	}
 	
+	
+	/**
+	 * Tulostus pelaajan tietojen näyttämiseksi käyttöliittymässä
+	 * @param out
+	 */
 	public void tulosta(PrintStream out) {
 		out.println("Nimi : " + nimi);
+		out.println("Ottelut : " + ottelut);
 		out.println("Maalit : " + maalit);
 		out.println("Syötöt : " + syotot);
 		out.println("Pisteet : " + pisteet);
@@ -189,7 +205,9 @@ public class Pelaaja {
 	}
 	
 	
-	
+	/**
+	 * Equals metodi, jolla tarkastetaan viitataanko samaan pelaajaan
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -222,10 +240,13 @@ public class Pelaaja {
 	}
 
 	/**
-	 * @param args
+	 * Testiohjelma pelaajalle
+	 * @param args ei käytössä
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		Pelaaja pelaaja = new Pelaaja();
+		pelaaja.parse("0|testi|1|2|3|4|5|6");
+		pelaaja.tulosta(System.out);
 
 	}
 

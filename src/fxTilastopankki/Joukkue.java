@@ -10,6 +10,8 @@ import java.util.Scanner;
 import fi.jyu.mit.ohj2.Mjonot;
 
 /**
+ * Luokka joukkueen luomiseksi
+ * 
  * @author Vertti Mäkikyrö
  *
  */
@@ -20,15 +22,29 @@ public class Joukkue {
 	private ArrayList<Pelaaja> pelaajat = new ArrayList<>();
 	
 	
+	/**
+	 * Muodostaja
+	 * @param nimi Joukkueen nimi
+	 * @param id Joukkueen ID-numero
+	 */
 	public Joukkue(String nimi, int id) {
 		this.setNimi(nimi);
 		this.id = id;
 	}
 	
+	
+	/**
+	 * Muodostaja
+	 */
 	public Joukkue() {
 		
 	}
 	
+	
+	/**
+	 * Lisätään pelaaja joukkueeseen
+	 * @param pelaaja Lisättävä pelaaja
+	 */
 	public void lisaaPelaaja(Pelaaja pelaaja) {
 		pelaajat.add(pelaaja);
 	}
@@ -71,6 +87,13 @@ public class Joukkue {
 	/**
 	 * Erottaa merkkirivistä joukkueen id-numeron ja nimen
 	 * @param rivi, merkkirivi, josta id-numero ja nimi erotellaan
+	 * 
+	 * @example
+	 * <pre name="test">
+	 * Joukkue joukkue = new Joukkue();
+	 * joukkue.parse("1|test|");
+	 * joukkue.toString().equals("1|test|");
+	 * </pre>
 	 */
 	public void parse(String rivi) {
 		StringBuffer sb = new StringBuffer(rivi);
@@ -79,13 +102,7 @@ public class Joukkue {
 	}
 	
 
-	public String tallennaPelaajat()  {
-		StringBuilder pelaajatTekstina = new StringBuilder();
-		for(Pelaaja pelaaja : pelaajat) {
-			pelaajatTekstina.append(pelaaja.toString());
-		}
-		return pelaajatTekstina.toString();
-	}
+
 	
 	
 	/**
@@ -95,13 +112,6 @@ public class Joukkue {
 		return pelaajat;
 	}
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
 
 	/**
 	 * @return the nimi
@@ -118,8 +128,8 @@ public class Joukkue {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/* 
+	 * Equals metodi, jolla tarkistetaan viitataanko samaan joukkueeseen
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -141,5 +151,28 @@ public class Joukkue {
 	}
 	
 	
+	/**
+	 * Palauttaa joukkueen tiedot merkkijonona
+	 */
+	@Override
+	public String toString() {
+		return id + "|" + nimi + "|";
+	}
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		Joukkue joukkue = new Joukkue();
+		joukkue.parse("1|testi");
+		System.out.println(joukkue.getId());
+		System.out.println(joukkue.getNimi());
+		Pelaaja pelaaja = new Pelaaja();
+		joukkue.lisaaPelaaja(pelaaja);
+		for(Pelaaja testi : joukkue.pelaajat) {
+			testi.tulosta(System.out);
+		}
+
+	}
 
 }

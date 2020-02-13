@@ -7,8 +7,9 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import fi.jyu.mit.fxgui.Dialogs;
 import fi.jyu.mit.fxgui.ListChooser;
 import fi.jyu.mit.fxgui.TextAreaOutputStream;
 import javafx.fxml.FXML;
@@ -59,25 +60,42 @@ public class TilastopankkiGUIController implements Initializable {
 		etsiPelaaja(textHakuehto.getText());
 	}
 	
+	@FXML private void handleTallenna() throws FileNotFoundException, UnsupportedEncodingException {
+		joukkueet.tallenna();
+		Dialogs.showMessageDialog("Tallennus onnistui");
+	}
+	
 	
 //==================================================//
+// T‰st‰ eteenp‰in ei suoraan k‰yttˆliitym‰‰n liittyv‰‰ koodia
+	
 	private Joukkueet joukkueet;
 	private Pelaaja pelaajaKohdalla;
 	private Joukkue joukkueKohdalla;
 	private TextArea areaPelaaja = new TextArea();
 	private String joukkueenNimi;
 	
-	
+	/**
+	 * Alustetaan joukkue- ja pelaajalistan kuuntelijat
+	 */
 	public void alusta() {
 		chooserJoukkueet.addSelectionListener(e -> haePelaajat());
 		chooserPelaajat.addSelectionListener(e -> naytaPelaaja());
 		panelPelaajat.setContent(areaPelaaja);
 	}
 	
+	/**
+	 * Asetetaan joukkueet
+	 * @param joukkueet Olio joukkueista
+	 */
 	public void setJoukkueet(Joukkueet joukkueet) {
 		this.joukkueet = joukkueet;
 	}
 	
+	/**
+	 * Luetaan joukkueet ja pelaajat tiedostoista
+	 * Pelaajat asetetaan oikeaan joukkueeseen
+	 */
 	public void lueTiedosto() {
 		
 		try {
@@ -97,6 +115,9 @@ public class TilastopankkiGUIController implements Initializable {
 		
 	}
 	
+	/**
+	 * N‰ytet‰‰n valitun pelaajan tiedot
+	 */
 	protected void naytaPelaaja() {
 		pelaajaKohdalla = chooserPelaajat.getSelectedObject();
 		if(pelaajaKohdalla == null) return;
@@ -119,9 +140,10 @@ public class TilastopankkiGUIController implements Initializable {
 	}
 	
 	/**
-	 * Haetaan pelaajat listalle
+	 * Haetaan tietyn joukkueen pelaajat listalle
 	 */
 	protected void haePelaajat() {
+		areaPelaaja.clear();
 		chooserPelaajat.clear();
 		for(Pelaaja pelaaja : chooserJoukkueet.getSelectedObject().getPelaajat()) {
 			chooserPelaajat.add(pelaaja.getNimi(), pelaaja);
@@ -134,12 +156,18 @@ public class TilastopankkiGUIController implements Initializable {
 		}
 	}
 	
+	
+	/**
+	 * Pelaajan tietojen muokkaus
+	 */
 	private void muokkaaPelaajaa() {
 		pelaajaKohdalla = chooserPelaajat.getSelectedObject();
 		if(pelaajaKohdalla == null) return;
 		
+		
 		Pelaaja muokattu = new Pelaaja();
 		muokattu = MuokkaaPelaajaaController.naytaPelaaja(null, pelaajaKohdalla);
+		if(muokattu == null) return;
 		
 		for(Joukkue joukkue : joukkueet.getJoukkueet()) {
 			for(Pelaaja pelaaja : joukkue.getPelaajat()) {
@@ -149,15 +177,21 @@ public class TilastopankkiGUIController implements Initializable {
 				}
 			}
 		}
+		areaPelaaja.clear();
 		haePelaajat();
 	}
 	
+	/**
+	 * Lis‰‰ uuden pelaajan valittuun joukkueeseen
+	 */
 	private void uusiPelaaja() {
 		joukkueKohdalla = chooserJoukkueet.getSelectedObject();
 		if (joukkueKohdalla == null) return;
 		
 		Pelaaja uusi = new Pelaaja();
 		uusi = PelaajanTiedotController.kysyPelaaja(null, uusi);
+		
+		if(uusi == null) return;
 		
 		int id = joukkueKohdalla.getId();
 		uusi.setId(id);
@@ -168,18 +202,14 @@ public class TilastopankkiGUIController implements Initializable {
 				break;
 			}
 		}
+		areaPelaaja.clear();
 		haePelaajat();
-		try {
-			joukkueet.tallennaPelaajat();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
+	
+	/**
+	 * Poistaa valitun pelaajan
+	 */
 	private void poistaPelaaja() {
 		pelaajaKohdalla = chooserPelaajat.getSelectedObject();
 		for(Joukkue joukkue : joukkueet.getJoukkueet()) {
@@ -189,28 +219,22 @@ public class TilastopankkiGUIController implements Initializable {
 				}
 			}
 		}
+		areaPelaaja.clear();
 		haePelaajat();
-		try {
-			joukkueet.tallennaPelaajat();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
+	
+	/**
+	 * Pelaajan etsint‰ nimen perusteella
+	 * @param hakuehto Pelaajan nimi tai nimen osa
+	 */
 	public void etsiPelaaja(String hakuehto) {
-		ArrayList<Pelaaja> pelaajat = new ArrayList<>();
+		areaPelaaja.clear();
+		chooserPelaajat.clear();
 		for(Joukkue joukkue : joukkueet.getJoukkueet()) {
 			for(Pelaaja pelaaja : joukkue.getPelaajat()) {
-				if(pelaaja.getNimi().contains(hakuehto)) pelaajat.add(pelaaja);
+				if(pelaaja.getNimi().contains(hakuehto)) chooserPelaajat.add(pelaaja.getNimi(), pelaaja);
 			}
-		}
-		chooserPelaajat.clear();
-		for(Pelaaja pelaaja : pelaajat) {
-			chooserPelaajat.add(pelaaja.getNimi(), pelaaja);
 		}
 	}
 	
@@ -224,15 +248,7 @@ public class TilastopankkiGUIController implements Initializable {
 		Joukkue uusi = new Joukkue(nimi, joukkueet.seuraavaId());
 		joukkueet.lisaaJoukkue(uusi);
 		haeJoukkueet();
-		try {
-			joukkueet.tallennaJoukkue();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		areaPelaaja.clear();
 	}
 	
 	
@@ -250,15 +266,7 @@ public class TilastopankkiGUIController implements Initializable {
 		chooserPelaajat.clear();
 		areaPelaaja.clear();
 		haeJoukkueet();
-		try {
-			joukkueet.tallennaJoukkue();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 	}
 
 

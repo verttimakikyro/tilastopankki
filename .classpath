@@ -8,5 +8,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/vertt/OneDrive/Tiedostot/Opiskelu/ohj2/Ali.jar"/>
 	<classpathentry kind="lib" path="C:/Users/vertt/Downloads/fxgui.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
