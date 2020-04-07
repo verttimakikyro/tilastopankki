@@ -191,7 +191,7 @@ public class TilastopankkiGUIController implements Initializable {
 		Pelaaja uusi = new Pelaaja();
 		uusi = PelaajanTiedotController.kysyPelaaja(null, uusi);
 		
-		if(uusi == null) return;
+		if(uusi.getNimi() == null) return;
 		
 		int id = joukkueKohdalla.getId();
 		uusi.setId(id);
