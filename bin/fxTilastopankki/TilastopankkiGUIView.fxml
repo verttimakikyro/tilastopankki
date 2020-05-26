@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import fi.jyu.mit.fxgui.ComboBoxChooser?>
 <?import fi.jyu.mit.fxgui.ListChooser?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
@@ -37,11 +37,15 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#handleMuokkaaPelaajaa" text="Muokkaa">
+            <MenuButton mnemonicParsing="false" text="Muokkaa">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#handleMuokkaaPelaajaa" text="Pelaaja" />
+                <MenuItem mnemonicParsing="false" onAction="#handleMuokkaaJoukkue" text="Joukkue" />
+              </items>
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
-            </Button>
+            </MenuButton>
             <Button mnemonicParsing="false" onAction="#handleTallenna" text="Tallenna">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -53,19 +57,25 @@
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
+          <Menu mnemonicParsing="false" text="Tiedosto">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
+              <MenuItem mnemonicParsing="false" onAction="#handleTallenna" text="Tallenna" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleLopeta" text="Lopeta" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
+          <Menu mnemonicParsing="false" text="Muokkaa">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
+              <MenuItem mnemonicParsing="false" onAction="#handleLisaaJoukkue" text="Lisää joukkue" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleMuokkaaJoukkue" text="Muokkaa joukkuetta" />
+                  <MenuItem mnemonicParsing="false" onAction="#handlePoistaJoukkue" text="Poista joukkue" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleLisaaPelaaja" text="Lisää pelaaja" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleMuokkaaPelaajaa" text="Muokkaa pelaajaa" />
+                  <MenuItem mnemonicParsing="false" onAction="#handlePoistaPelaaja" text="Poista pelaaja" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Help">
+          <Menu mnemonicParsing="false" text="Apua">
             <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" onAction="#handleApua" text="Apua" />
             </items>
           </Menu>
         </menus>
@@ -87,9 +97,6 @@
                <center>
                   <TextField fx:id="textHakuehto" onInputMethodTextChanged="#handleHae" onKeyTyped="#handleHae" BorderPane.alignment="CENTER" />
                </center>
-               <bottom>
-                  <ComboBoxChooser prefHeight="25.0" prefWidth="200.0" rivit="testi" BorderPane.alignment="CENTER" />
-               </bottom>
             </BorderPane>
          </top>
       </BorderPane>

@@ -12,9 +12,9 @@ import javafx.stage.Stage;
 import fxTilastopankki.Pelaaja;
 
 /**
- * Kysyt‰‰n pelaajan tiedot ja luodaan t‰t‰ varten dialogi.
+ * Kysyt√§√§n pelaajan tiedot ja luodaan t√§t√§ varten dialogi.
  * 
- * @author Vertti M‰kikyrˆ
+ * @author Vertti M√§kikyr√∂
  *
  */
 public class PelaajanTiedotController implements ModalControllerInterface<Pelaaja>{
@@ -25,33 +25,55 @@ public class PelaajanTiedotController implements ModalControllerInterface<Pelaaj
 	@FXML private TextField textSyotot;
 	@FXML private TextField textPlusMiinus;
 	@FXML private TextField textJaahyt;
-	
-	private Pelaaja vastaus = new Pelaaja();
+	private Pelaaja vastaus = null;
 
 		
 	@FXML private void handleOK() {
+	    vastaus = new Pelaaja();
+	    
+	    if(textNimi.getText().equals("")) {
+	        Dialogs.showMessageDialog("Anna pelaajalle nimi!");
+	        vastaus = null;
+	        return;
+	    }
+	    
 		vastaus.setNimi(textNimi.getText()); 
-		
+	   
 		try {
+		if(Integer.valueOf(textOttelut.getText()) < 0) {
+		    Dialogs.showMessageDialog("Ottelut eiv√§t voi olla miinuksella!");
+		    vastaus = null;
+		    return;
+		}
 		vastaus.setOttelut(Integer.valueOf(textOttelut.getText()));
 		} catch (NumberFormatException e) {
-			Dialogs.showMessageDialog("Virheellinen syˆte kent‰ss‰ ottelut!");
+			Dialogs.showMessageDialog("Virheellinen sy√∂te kent√§ss√§ ottelut!");
 			vastaus = null;
 			return;
 		}
 		
 		try {
-		vastaus.setMaalit(Integer.valueOf(textMaalit.getText()));
+		    if(Integer.valueOf(textMaalit.getText()) < 0) {
+		        Dialogs.showMessageDialog("Maalit eiv√§t voi olla miinuksella!");
+		        vastaus = null;
+		        return;
+		    }
+		    vastaus.setMaalit(Integer.valueOf(textMaalit.getText()));
 		} catch (NumberFormatException e) {
-			Dialogs.showMessageDialog("Virheellinen syˆte kent‰ss‰ maalit!");
+			Dialogs.showMessageDialog("Virheellinen sy√∂te kent√§ss√§ maalit!");
 			vastaus = null;
 			return;
 		}
 		
 		try {
-		vastaus.setSyotot(Integer.valueOf(textSyotot.getText()));
+		    if(Integer.valueOf(textSyotot.getText()) < 0) {
+		        Dialogs.showMessageDialog("Sy√∂t√∂t eiv√§t voi olla miinuksella!");
+	            vastaus = null;
+	            return;
+		    }
+		    vastaus.setSyotot(Integer.valueOf(textSyotot.getText()));
 		} catch (NumberFormatException e) {
-			Dialogs.showMessageDialog("Virheellinen syˆte kent‰ss‰ syˆtˆt!");
+			Dialogs.showMessageDialog("Virheellinen sy√∂te kent√§ss√§ sy√∂t√∂t!");
 			vastaus = null;
 			return;
 		}
@@ -59,23 +81,29 @@ public class PelaajanTiedotController implements ModalControllerInterface<Pelaaj
 		try {
 		vastaus.setPlusmiinus(Integer.valueOf(textPlusMiinus.getText()));
 		} catch (NumberFormatException e) {
-			Dialogs.showMessageDialog("Virheellinen syˆte kent‰ss‰ Plus/Miinus!");
+			Dialogs.showMessageDialog("Virheellinen sy√∂te kent√§ss√§ Plus/Miinus!");
 			vastaus = null;
 			return;
 		}
 		
 		try {
+		    if(Integer.valueOf(textJaahyt.getText()) < 0) {
+                Dialogs.showMessageDialog("J√§√§hyt eiv√§t voi olla miinuksella!");
+                vastaus = null;
+                return;
+            }
 		vastaus.setJaahyt(Integer.valueOf(textJaahyt.getText()));
 		} catch (NumberFormatException e) {
-			Dialogs.showMessageDialog("Virheellinen syˆte kent‰ss‰ j‰‰hyt!");
+			Dialogs.showMessageDialog("Virheellinen sy√∂te kent√§ss√§ j√§√§hyt!");
 			vastaus = null;
 			return;
 		}
 		vastaus.setPisteet();
-		ModalController.closeStage(textNimi);
+		ModalController.closeStage(textJaahyt);
 	}
 	
 	@FXML private void handleCancel() {
+	    vastaus = null;
 		ModalController.closeStage(textNimi);
 	}
 	
@@ -84,7 +112,7 @@ public class PelaajanTiedotController implements ModalControllerInterface<Pelaaj
 	 * Luodaan tietojen kysymysdialogi ja palautetaan pelaaja tai null
 	 * @param modalityStage mille ollaan modaalisia, null = sovellukselle
 	 * @param vastaus null jos painetaan Cancel, muuten pelaaja
-	 * @return
+	 * @return Pelaaja tai null
 	 */
 	public static Pelaaja kysyPelaaja(Stage modalityStage, Pelaaja vastaus) {
 		return ModalController.showModal(
@@ -96,7 +124,7 @@ public class PelaajanTiedotController implements ModalControllerInterface<Pelaaj
 
 	@Override
 	public void setDefault(Pelaaja oletus) {
-		vastaus = oletus;
+		vastaus = null;
 		
 	}
 
@@ -108,7 +136,7 @@ public class PelaajanTiedotController implements ModalControllerInterface<Pelaaj
 
 	
 	/**
-	 * Mit‰ tehd‰‰n, kun dialogi n‰ytetty
+	 * Mit√§ tehd√§√§n, kun dialogi n√§ytetty
 	 */
 	@Override
 	public void handleShown() {

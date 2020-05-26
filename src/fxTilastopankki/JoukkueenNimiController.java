@@ -10,9 +10,9 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 /**
- * Kysyt‰‰n joukkueen nimi ja luodaan t‰t‰ varten dialogi.
+ * Kysyt√§√§n joukkueen nimi ja luodaan t√§t√§ varten dialogi.
  * 
- * @author Vertti M‰kikyrˆ
+ * @author Vertti M√§kikyr√∂
  *
  */
 public class JoukkueenNimiController implements ModalControllerInterface<String> {
@@ -37,7 +37,7 @@ public class JoukkueenNimiController implements ModalControllerInterface<String>
 
 
 	/**
-	 * Mit‰ tehd‰‰n, kun dialogi on n‰ytetty
+	 * Mit√§ tehd√§√§n, kun dialogi on n√§ytetty
 	 */
 	@Override
 	public void handleShown() {
@@ -55,7 +55,7 @@ public class JoukkueenNimiController implements ModalControllerInterface<String>
 	/**
 	 * Luodaan nimen kysymis dialogi ja palautetaan annettu nimi tai null
 	 * @param modalityStage mille ollaan modaalisia, null = sovellukselle
-	 * @param oletus Mit‰ nime‰ k‰ytet‰‰n oletuksena
+	 * @param oletus Mit√§ nime√§ k√§ytet√§√§n oletuksena
 	 * @return null jos painetaan Cancel, muuten annettu nimi
 	 */
 	public static String kysyNimi(Stage modalityStage, String oletus) {

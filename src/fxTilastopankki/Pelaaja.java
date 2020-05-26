@@ -10,7 +10,7 @@ import java.io.PrintStream;
 import fi.jyu.mit.ohj2.Mjonot;
 
 /**
- * @author Vertti M‰kikyrˆ
+ * @author Vertti M√§kikyr√∂
  * Luokka pelaajan luomiseksi
  */
 public class Pelaaja {
@@ -26,7 +26,7 @@ public class Pelaaja {
 
 		
 	/**
-	 * Muodostaja tyhj‰lle pelaajalla, jonka tiedot t‰ytet‰‰n k‰yttˆliittym‰ss‰
+	 * Muodostaja tyhj√§lle pelaajalle, jonka tiedot t√§ytet√§√§n k√§ytt√∂liittym√§ss√§
 	 */
 	public Pelaaja() {
 		
@@ -53,8 +53,9 @@ public class Pelaaja {
 		this.syotot = syotot;
 	}
 
+
 	/**
-	 * @param pisteet the pisteet to set
+	 * Asetetaan pelaajalle pisteet maalien ja sy√∂tt√∂jen perusteella
 	 */
 	public void setPisteet() {
 		this.pisteet = maalit + syotot;
@@ -81,6 +82,9 @@ public class Pelaaja {
 		this.ottelut = ottelut;
 	}
 
+	/**
+	 * @return nimi
+	 */
 	public String getNimi() {
 		return nimi;
 	}
@@ -161,6 +165,9 @@ public class Pelaaja {
 		ottelut = Mjonot.erota(sb, '|', ottelut);
 	}
 	
+	/**
+	 * Asetetaan pelaajalle tiedot testaamista varten
+	 */
 	public void testiTiedot() {
 		this.nimi = "testi";
 		this.maalit = 1;
@@ -191,17 +198,17 @@ public class Pelaaja {
 	
 	
 	/**
-	 * Tulostus pelaajan tietojen n‰ytt‰miseksi k‰yttˆliittym‰ss‰
-	 * @param out
+	 * Tulostus pelaajan tietojen n√§ytt√§miseksi k√§ytt√∂liittym√§ss√§
+	 * @param out minne tulostetaan
 	 */
 	public void tulosta(PrintStream out) {
 		out.println("Nimi : " + nimi);
 		out.println("Ottelut : " + ottelut);
 		out.println("Maalit : " + maalit);
-		out.println("Syˆtˆt : " + syotot);
+		out.println("Sy√∂t√∂t : " + syotot);
 		out.println("Pisteet : " + pisteet);
 		out.println("Plus/Miinus : " + plusmiinus);
-		out.println("J‰‰hyminuutit : " + jaahyt);	
+		out.println("J√§√§hyminuutit : " + jaahyt);	
 	}
 	
 	
@@ -239,9 +246,18 @@ public class Pelaaja {
 		return true;
 	}
 
-	/**
+	/* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        // TODO Auto-generated method stub
+        return super.hashCode();
+    }
+
+    /**
 	 * Testiohjelma pelaajalle
-	 * @param args ei k‰ytˆss‰
+	 * @param args ei k√§yt√∂ss√§
 	 */
 	public static void main(String[] args) {
 		Pelaaja pelaaja = new Pelaaja();

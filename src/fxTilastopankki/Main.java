@@ -10,7 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 /**
- * @author Vertti M�kikyr�
+ * @author Vertti Mäkikyrö
  *
  */
 public class Main extends Application{
@@ -25,6 +25,10 @@ public class Main extends Application{
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Tilastopankki");
 			
+			primaryStage.setOnCloseRequest((event) -> {
+			    tilastopankkiCtrl.tallennetaanko();    
+			});
+			
 			Joukkueet joukkueet = new Joukkueet();
 			tilastopankkiCtrl.setJoukkueet(joukkueet);
 			
@@ -37,10 +41,9 @@ public class Main extends Application{
 	}
 
 	/**
-	 * @param args
-	 * @throws Exception 
+	 * @param args ei käytössä
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		launch(args);
 	}
 

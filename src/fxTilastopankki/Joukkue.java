@@ -4,22 +4,25 @@
 package fxTilastopankki;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.Scanner;
-
+import fi.jyu.mit.fxgui.Dialogs;
 import fi.jyu.mit.ohj2.Mjonot;
 
 /**
  * Luokka joukkueen luomiseksi
  * 
- * @author Vertti M�kikyr�
+ * @author Vertti Mäkikyrö
  *
  */
 public class Joukkue {
 	
 	private String nimi;
 	private int id;
-	private ArrayList<Pelaaja> pelaajat = new ArrayList<>();
+	private Pelaaja pelaajat[] = new Pelaaja[0];
+	private static final int MAX_PELAAJIA = 20;
+	private int lkm = 0;
 	
 	
 	/**
@@ -42,11 +45,16 @@ public class Joukkue {
 	
 	
 	/**
-	 * Lis�t��n pelaaja joukkueeseen
-	 * @param pelaaja Lis�tt�v� pelaaja
+	 * Lisätään pelaaja joukkueeseen
+	 * @param pelaaja Lisättävä pelaaja
 	 */
 	public void lisaaPelaaja(Pelaaja pelaaja) {
-		pelaajat.add(pelaaja);
+	    if(pelaajat.length < MAX_PELAAJIA) {
+	        pelaajat = Arrays.copyOf(pelaajat, lkm+1);
+	        pelaajat[lkm] = pelaaja;
+	        lkm++;
+	    }
+	    else Dialogs.showMessageDialog("Joukkueen pelaajien määrä on täynnä");
 	}
 	
 	
@@ -68,26 +76,55 @@ public class Joukkue {
 
 	/**
 	 * Luetaan tiedostosta rivi kerrallaan pelaajan tiedot ja luodaan uusi pelaaja
-	 * @throws Exception
+	 * @param tiedostonNimi mikä tiedosto luetaan
+	 * 
+	 * @example
+	 * <pre name="test">
+	 * #import java.io.File;
+	 * Joukkueet joukkueet = new Joukkueet();
+	 * Joukkue joukkue = new Joukkue();
+	 * joukkue.setId(1);
+	 * joukkueet.lisaaJoukkue(joukkue);
+	 * Pelaaja pelaaja1 = new Pelaaja();
+	 * pelaaja1.testiTiedot();
+	 * Pelaaja pelaaja2 = new Pelaaja();
+	 * pelaaja2.parse("2|test|1|1|1|1|1|1|");
+	 * Pelaaja pelaaja3 = new Pelaaja();
+	 * pelaaja3.parse("1|test|1|1|1|1|1|1|");
+	 * Pelaaja pelaaja4 = new Pelaaja();
+	 * pelaaja4.parse("3|test|1|1|1|1|1|1|");
+	 * joukkue.lisaaPelaaja(pelaaja1);
+	 * joukkue.lisaaPelaaja(pelaaja2);
+	 * joukkue.lisaaPelaaja(pelaaja3);
+	 * joukkue.lisaaPelaaja(pelaaja4);
+	 * joukkueet.tallenna("joukkuetesti.dat", "pelaajatesti.dat");
+	 * joukkue.tyhjenna();
+	 * joukkue.lueTiedosto("pelaajatesti.dat");
+	 * joukkue.getPelaajat().length === 2;
+	 * joukkue.getPelaajat()[0].getId() === 1;
+	 * joukkue.getPelaajat()[1].getId() === 1;
+	 * </pre>
 	 */
-	public void lueTiedosto() throws Exception {
-		
-		try (Scanner lukija = new Scanner(new File("pelaajat.dat"))) {
+	public void lueTiedosto(String tiedostonNimi) {
+	    
+		try (Scanner lukija = new Scanner(new File(tiedostonNimi))) {
 			while (lukija.hasNextLine()) {
-				String rivi = lukija.nextLine();
-				//if (rivi.charAt(0) == ';') continue; 
+				String rivi = lukija.nextLine(); 
 				Pelaaja pelaaja = new Pelaaja();
 				pelaaja.parse(rivi);
-				if(pelaaja.getId() == this.id) pelaajat.add(pelaaja);
+				if(pelaaja.getId() == this.id) {
+				    lisaaPelaaja(pelaaja);
+				}
 			}
-		}
+		} catch (FileNotFoundException e) {
+		    Dialogs.showMessageDialog("Virhe tiedoston lukemisessa! " + e.getMessage());
+        }
 	
 	}
 	
 	/**
-	 * Erottaa merkkirivist� joukkueen id-numeron ja nimen
-	 * @param rivi, merkkirivi, josta id-numero ja nimi erotellaan
-	 * 
+	 * Erottaa merkkirivistä joukkueen id-numeron ja nimen
+	 * @param rivi merkkirivi, josta id-numero ja nimi erotellaan
 	 * @example
 	 * <pre name="test">
 	 * Joukkue joukkue = new Joukkue();
@@ -102,15 +139,30 @@ public class Joukkue {
 	}
 	
 
+	/**
+	 * Metodi pelaajalistan tyhjentämiseksi.
+	 */
+	public void tyhjenna() {
+	    this.pelaajat = new Pelaaja[0];
+	    this.lkm = 0;
+	}
 
-	
 	
 	/**
 	 * @return Palauttaa listan joukkueen pelaajista
 	 */
-	public ArrayList<Pelaaja> getPelaajat() {
+	public Pelaaja[] getPelaajat() {
 		return pelaajat;
 	}
+	
+    /**
+     * @param pelaajat the pelaajat to set
+     */
+    public void setPelaajat(Pelaaja[] pelaajat) {
+        this.pelaajat = pelaajat;
+        
+    }
+
 
 
 	/**
@@ -159,8 +211,18 @@ public class Joukkue {
 		return id + "|" + nimi + "|";
 	}
 	
-	/**
-	 * @param args
+	/* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+
+    /**
+     * Testipääohjelma luokalle
+	 * @param args ei käytössä
 	 */
 	public static void main(String[] args) {
 		Joukkue joukkue = new Joukkue();

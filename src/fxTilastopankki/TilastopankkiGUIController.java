@@ -3,15 +3,19 @@
  */
 package fxTilastopankki;
 
-import java.io.FileNotFoundException;
+import java.awt.Desktop;
+import java.io.IOException;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 import fi.jyu.mit.fxgui.Dialogs;
 import fi.jyu.mit.fxgui.ListChooser;
 import fi.jyu.mit.fxgui.TextAreaOutputStream;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ScrollPane;
@@ -20,8 +24,8 @@ import javafx.scene.control.TextField;
 
 
 /**
- * @author Vertti M‰kikyrˆ
- * Luokka k‰yttˆliittym‰n tapahtumien hoitamiseksi
+ * @author Vertti M√§kikyr√∂
+ * Luokka k√§ytt√∂liittym√§n tapahtumien hoitamiseksi
  */
 public class TilastopankkiGUIController implements Initializable {
 	
@@ -44,6 +48,10 @@ public class TilastopankkiGUIController implements Initializable {
 		muokkaaPelaajaa();
 	}
 	
+	@FXML private void handleMuokkaaJoukkue() {
+	    uusiNimi();
+	}
+	
 	@FXML private void handlePoistaPelaaja() {
 		poistaPelaaja();
 	}
@@ -60,20 +68,32 @@ public class TilastopankkiGUIController implements Initializable {
 		etsiPelaaja(textHakuehto.getText());
 	}
 	
-	@FXML private void handleTallenna() throws FileNotFoundException, UnsupportedEncodingException {
-		joukkueet.tallenna();
-		Dialogs.showMessageDialog("Tallennus onnistui");
+	@FXML private void handleTallenna()  {
+		if(joukkueet.tallenna("joukkueet.dat", "pelaajat.dat")) {
+		onkoMuokattu = false;
+		Dialogs.showMessageDialog("Tallennus onnistui!");
+		}
+	}
+	
+	@FXML private void handleLopeta() {
+	    tallennetaanko();
+	    Platform.exit();
+	}
+	
+	@FXML private void handleApua() {
+	    avustus();
 	}
 	
 	
 //==================================================//
-// T‰st‰ eteenp‰in ei suoraan k‰yttˆliitym‰‰n liittyv‰‰ koodia
+// T√§st√§ eteenp√§in ei suoraan k√§ytt√∂liitym√§√§n liittyv√§√§ koodia
 	
 	private Joukkueet joukkueet;
 	private Pelaaja pelaajaKohdalla;
 	private Joukkue joukkueKohdalla;
 	private TextArea areaPelaaja = new TextArea();
 	private String joukkueenNimi;
+	private boolean onkoMuokattu = false;
 	
 	/**
 	 * Alustetaan joukkue- ja pelaajalistan kuuntelijat
@@ -96,27 +116,21 @@ public class TilastopankkiGUIController implements Initializable {
 	 * Luetaan joukkueet ja pelaajat tiedostoista
 	 * Pelaajat asetetaan oikeaan joukkueeseen
 	 */
-	public void lueTiedosto() {
+	public void lueTiedosto()  {
 		
-		try {
-			joukkueet.lueTiedosto();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		joukkueet.lueTiedosto("joukkueet.dat");
 		for(Joukkue joukkue : joukkueet.getJoukkueet()) {
 			try {
-				joukkue.lueTiedosto();
+				joukkue.lueTiedosto("pelaajat.dat");
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			  Dialogs.showMessageDialog("Virhe tiedoston lukemisessa " + e.getMessage());
 			}
 		}
 		
 	}
 	
 	/**
-	 * N‰ytet‰‰n valitun pelaajan tiedot
+	 * N√§ytet√§√§n valitun pelaajan tiedot
 	 */
 	protected void naytaPelaaja() {
 		pelaajaKohdalla = chooserPelaajat.getSelectedObject();
@@ -150,25 +164,27 @@ public class TilastopankkiGUIController implements Initializable {
 		}
 	}
 	
-	public void tulostaValitut(TextArea text) {
-		try (PrintStream os = TextAreaOutputStream.getTextPrintStream(text)) {
-			
-		}
-	}
-	
 	
 	/**
 	 * Pelaajan tietojen muokkaus
 	 */
 	private void muokkaaPelaajaa() {
-		pelaajaKohdalla = chooserPelaajat.getSelectedObject();
-		if(pelaajaKohdalla == null) return;
-		
+	    
+	    try {
+	        pelaajaKohdalla = chooserPelaajat.getSelectedObject();
+	    } catch (NullPointerException e) {
+	        Dialogs.showMessageDialog("Pelaajaa ei ole valittu!");
+	        return;
+	    }
 		
 		Pelaaja muokattu = new Pelaaja();
 		muokattu = MuokkaaPelaajaaController.naytaPelaaja(null, pelaajaKohdalla);
-		if(muokattu == null) return;
+		if(muokattu == null) {
+		    return;
+		}
 		
+		muokattu.setId(chooserJoukkueet.getSelectedObject().getId());
+				
 		for(Joukkue joukkue : joukkueet.getJoukkueet()) {
 			for(Pelaaja pelaaja : joukkue.getPelaajat()) {
 				if(pelaaja.equals(pelaajaKohdalla)) {
@@ -179,21 +195,25 @@ public class TilastopankkiGUIController implements Initializable {
 		}
 		areaPelaaja.clear();
 		haePelaajat();
+		onkoMuokattu = true;
 	}
 	
 	/**
-	 * Lis‰‰ uuden pelaajan valittuun joukkueeseen
+	 * Lis√§√§ uuden pelaajan valittuun joukkueeseen
 	 */
 	private void uusiPelaaja() {
-		joukkueKohdalla = chooserJoukkueet.getSelectedObject();
-		if (joukkueKohdalla == null) return;
+	      if(chooserJoukkueet.getSelectedObject() == null) {
+	            Dialogs.showMessageDialog("Joukkuetta ei ole valittu!");
+	            return;
+	        }
 		
 		Pelaaja uusi = new Pelaaja();
 		uusi = PelaajanTiedotController.kysyPelaaja(null, uusi);
 		
-		if(uusi.getNimi() == null) return;
+		if(uusi == null) return;
 		
-		int id = joukkueKohdalla.getId();
+		
+		int id = chooserJoukkueet.getSelectedObject().getId();
 		uusi.setId(id);
 		
 		for(Joukkue joukkue : joukkueet.getJoukkueet()) {
@@ -204,28 +224,48 @@ public class TilastopankkiGUIController implements Initializable {
 		}
 		areaPelaaja.clear();
 		haePelaajat();
+		onkoMuokattu = true;
 	}
 	
+	/**
+	 * Ohjelmaa sulkiessa kysyt√§√§n k√§ytt√§j√§lt√§ tietojen tallennus
+	 */
+	public void tallennetaanko() {
+	    if(onkoMuokattu) {
+	    if(Dialogs.showQuestionDialog("Tallennus", "Haluatko tallentaa?", "Kyll√§", "Ei")) joukkueet.tallenna("joukkueet.dat", "pelaajat.dat");
+	    }
+	}
 	
 	/**
 	 * Poistaa valitun pelaajan
 	 */
 	private void poistaPelaaja() {
+	    if(chooserPelaajat.getSelectedObject() == null) {
+	        Dialogs.showMessageDialog("Pelaajaa ei ole valittu!");
+	        return;
+	    }
 		pelaajaKohdalla = chooserPelaajat.getSelectedObject();
 		for(Joukkue joukkue : joukkueet.getJoukkueet()) {
-			for(int i = joukkue.getPelaajat().size() - 1; i >= 0; i--) {
-				if(joukkue.getPelaajat().get(i).equals(pelaajaKohdalla)) {
-					joukkue.getPelaajat().remove(pelaajaKohdalla);
-				}
-			}
+		    if(joukkue.getId() == pelaajaKohdalla.getId()) {
+		        int lkm = 0;
+		        Pelaaja pelaajat[] = new Pelaaja[0];
+		        for(int i = 0; i < joukkue.getPelaajat().length; i++) {
+		            if(joukkue.getPelaajat()[i].equals(pelaajaKohdalla)) continue;
+		            pelaajat = Arrays.copyOf(pelaajat, lkm+1);
+		            pelaajat[lkm] = joukkue.getPelaajat()[i];
+		            lkm++;
+		        }
+		        joukkue.setPelaajat(pelaajat);
+		    }
 		}
 		areaPelaaja.clear();
 		haePelaajat();
+		onkoMuokattu = true;
 	}
 	
 	
 	/**
-	 * Pelaajan etsint‰ nimen perusteella
+	 * Pelaajan etsint√§ nimen perusteella
 	 * @param hakuehto Pelaajan nimi tai nimen osa
 	 */
 	public void etsiPelaaja(String hakuehto) {
@@ -233,14 +273,20 @@ public class TilastopankkiGUIController implements Initializable {
 		chooserPelaajat.clear();
 		for(Joukkue joukkue : joukkueet.getJoukkueet()) {
 			for(Pelaaja pelaaja : joukkue.getPelaajat()) {
-				if(pelaaja.getNimi().contains(hakuehto)) chooserPelaajat.add(pelaaja.getNimi(), pelaaja);
+			    String[] nimi = pelaaja.getNimi().split(" ");
+			    for(int i = 0; i < nimi.length; i++) {
+			        if(nimi[i].toLowerCase().startsWith(hakuehto.toLowerCase())) { 
+			            chooserPelaajat.add(pelaaja.getNimi(), pelaaja); 
+			            break;
+			        }
+			    }
 			}
 		}
 	}
 	
 	/**
-	 * Lis‰t‰‰n uusi joukkue
-	 * @param nimi, Joukkueen nimi 
+	 * Lis√§t√§√§n uusi joukkue
+	 * @param nimi Joukkueen nimi 
 	 */
 	private void uusiJoukkue()  {
 		String nimi = JoukkueenNimiController.kysyNimi(null, joukkueenNimi);
@@ -249,6 +295,24 @@ public class TilastopankkiGUIController implements Initializable {
 		joukkueet.lisaaJoukkue(uusi);
 		haeJoukkueet();
 		areaPelaaja.clear();
+		onkoMuokattu = true;
+	}
+	   
+	
+	/**
+	 * Metodi joukkueen nimen muuttamiselle
+	 */
+	private void uusiNimi()  {
+	    if(chooserJoukkueet.getSelectedObject() == null) {
+	        Dialogs.showMessageDialog("Joukkuetta ei ole valittu!");
+	        return;
+	    }
+	    joukkueKohdalla = chooserJoukkueet.getSelectedObject();
+	    String nimi = JoukkueenNimiController.kysyNimi(null, joukkueenNimi);
+	    if(nimi == null) return;
+	    joukkueKohdalla.setNimi(nimi);
+	    haeJoukkueet();
+	    onkoMuokattu = true;
 	}
 	
 	
@@ -256,22 +320,39 @@ public class TilastopankkiGUIController implements Initializable {
 	 * Metodi joukkueen poistamiseksi
 	 */
 	private void poistaJoukkue() {
+	    if(chooserJoukkueet.getSelectedObject() == null) {
+            Dialogs.showMessageDialog("Joukkuetta ei ole valittu!");
+            return;
+        }
 		joukkueKohdalla = chooserJoukkueet.getSelectedObject();
 		for(int i = joukkueet.getJoukkueet().size() - 1; i >= 0 ; i--) {
 			if(joukkueet.getJoukkueet().get(i).equals(joukkueKohdalla)) {
 				joukkueet.getJoukkueet().remove(joukkueKohdalla);
 			}
-		}
-		
+		}	
 		chooserPelaajat.clear();
 		areaPelaaja.clear();
 		haeJoukkueet();
-
+		onkoMuokattu = true;
 	}
 
+	/**
+	 * N√§ytet√§√§n ohjelman suunnitelma selaimessa
+	 */
+	private void avustus() {
+	    Desktop desktop = Desktop.getDesktop();
+	    try {
+	        URI uri = new URI("https://gitlab.jyu.fi/vesamaki/ohj2");
+	        desktop.browse(uri);
+	    } catch (URISyntaxException e) {
+	        return;
+	    } catch (IOException e) {
+	        return;
+	    }
+	}
 
 	/**
-	 * @param args
+	 * @param args ei k√§yt√∂ss√§
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

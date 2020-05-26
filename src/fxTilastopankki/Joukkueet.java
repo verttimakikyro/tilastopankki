@@ -6,14 +6,15 @@ package fxTilastopankki;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import fi.jyu.mit.fxgui.Dialogs;
+
 /**
- * Luokkka joukkueiden k‰sittelemiseksi
+ * Luokkka joukkueiden k√§sittelemiseksi
  * 
- * @author Vertti M‰kikyrˆ
+ * @author Vertti M√§kikyr√∂
  *
  */
 public class Joukkueet {
@@ -24,10 +25,25 @@ public class Joukkueet {
 	
 	/**
 	 * Luetaan joukkueet tiedostosta
-	 * @throws FileNotFoundException jos tiedostoa ei lˆydy
+	 * @param tiedosto Tiedosto joka luetaan
+	 * 
+	 * @example
+	 * <pre name="test">
+     * #import java.io.File;
+     * Joukkueet joukkueet = new Joukkueet();
+     * Joukkue joukkue1 = new Joukkue("test", 1);
+     * Joukkue joukkue2 = new Joukkue("test", 2);
+     * Joukkue joukkue3 = new Joukkue("test", 3);
+     * joukkueet.lisaaJoukkue(joukkue1);
+     * joukkueet.lisaaJoukkue(joukkue2);
+     * joukkueet.lisaaJoukkue(joukkue3);
+     * joukkueet.tallenna("joukkueettesti.dat", "pelaajattesti.dat");
+     * joukkueet.tyhjenna();    
+     * joukkueet.lueTiedosto("joukkuetesti.dat");
+     * joukkueet.getJoukkueet().size() === 3;
 	 */
-	public void lueTiedosto() throws FileNotFoundException {
-		try (Scanner lukija = new Scanner(new File("joukkueet.dat"))) {
+	public void lueTiedosto(String tiedosto) {
+		try (Scanner lukija = new Scanner(new File(tiedosto))) {
 			while (lukija.hasNextLine()) {
 				String rivi = lukija.nextLine();
 				if (rivi.charAt(0) == ';') continue; 
@@ -35,7 +51,9 @@ public class Joukkueet {
 				joukkue.parse(rivi);
 				joukkueet.add(joukkue);
 			}
-		}
+		} catch (FileNotFoundException e) {
+            Dialogs.showMessageDialog("Virhe tiedoston lukemisessa! " + e.getMessage());
+        }
 	}
 	
 
@@ -65,7 +83,7 @@ public class Joukkueet {
 	
 	
 	/**
-	 * Lis‰t‰‰n uusi joukkue
+	 * Lis√§t√§√§n uusi joukkue
 	 * @param nimi Joukkueen nimi
 	 */
 	public void uusiJoukkue(String nimi) {
@@ -73,17 +91,36 @@ public class Joukkueet {
 	}
 	
 	/**
-	 * Lis‰t‰‰n joukkue
-	 * @param joukkue
+	 * Lis√§t√§√§n joukkue
+	 * @param joukkue lis√§tt√§v√§ joukkue
 	 */
 	public void lisaaJoukkue(Joukkue joukkue) {
 		joukkueet.add(joukkue);
 	}
 	
 	/**
-	 * Etsit‰‰n joukkue ID-numeron perusteella
+	 * Etsit√§√§n joukkue ID-numeron perusteella
 	 * @param id Joukkueen ID-numero
-	 * @return Etsitt‰v‰ joukkue
+	 * @return Etsitt√§v√§ joukkue
+	 * 
+	 * @example
+	 * <pre name="test">
+	 * Joukkueet joukkueet = new Joukkueet();
+	 * Joukkue joukkue1 = new Joukkue("test1", 1);
+	 * Joukkue joukkue2 = new Joukkue("test2", 2);
+	 * Joukkue joukkue3 = new Joukkue("test3", 3);
+	 * Joukkue joukkue4 = new Joukkue("test4", 4);
+	 * joukkueet.lisaaJoukkue(joukkue1);
+	 * joukkueet.lisaaJoukkue(joukkue2);
+	 * joukkueet.lisaaJoukkue(joukkue3);
+	 * joukkueet.lisaaJoukkue(joukkue4);
+	 * joukkueet.etsiJoukkue(1) === true;
+	 * joukkueet.etsiJoukkue(5) === false;
+	 * joukkueet.etsiJoukkue(2) === true;
+	 * joukkueet.etsiJoukkue(6) === false;
+	 * joukkueet.etsiJoukkue(4) === true;
+	 * </pre>
+	 * 
 	 */
 	public boolean etsiJoukkue(int id) {
 		for(Joukkue joukkue : joukkueet) {
@@ -102,29 +139,62 @@ public class Joukkueet {
 	
 	
 	/**
-	 * Tallennetaan joukkueet tiedostoon
-	 * @throws FileNotFoundException
-	 * @throws UnsupportedEncodingException
+	 * Metodi joukkueiden tyhjent√§miseksi.
 	 */
-	public void tallenna() throws FileNotFoundException, UnsupportedEncodingException {
-		PrintWriter writerJoukkue = new PrintWriter("joukkueet.dat", "UTF-8");
-		PrintWriter writerPelaajat = new PrintWriter("pelaajat.dat", "UTF-8");
+	public void tyhjenna() {
+	    this.joukkueet = new ArrayList<>();
+	}
+	
+	
+	/**
+	 * Tallennetaan joukkueet tiedostoon
+	 * @param joukkueetTiedosto Mihin tiedostoon tallennetaan joukkueen tiedot
+	 * @param pelaajatTiedosto Mihin tiedostoon tallennetaan pelaajien tiedot
+	 * @return True jos tallennus onnistui, muuten false
+	 * @example
+     * <pre name="test">
+     * #import java.io.File;
+     * Joukkueet joukkueet = new Joukkueet();
+     * Joukkue joukkue1 = new Joukkue("test", 1);
+     * Joukkue joukkue2 = new Joukkue("test", 2);
+     * Joukkue joukkue3 = new Joukkue("test", 3);
+     * joukkueet.lisaaJoukkue(joukkue1);
+     * joukkueet.lisaaJoukkue(joukkue2);
+     * joukkueet.lisaaJoukkue(joukkue3);
+     * joukkueet.tallenna("joukkuetesti.dat", "pelaajattesti.dat");
+     * joukkueet.tyhjenna();
+     * joukkueet.lueTiedosto("joukkueet.dat");
+     * joukkueet.getJoukkueet().size() === 3;
+     * joukkueet.getJoukkueet().get(1).getId() === 2;
+     * </pre>
+	 */
+	@SuppressWarnings("resource")
+    public boolean tallenna(String joukkueetTiedosto, String pelaajatTiedosto)  {
+        
+	    try {
+	            PrintWriter writerJoukkue = new PrintWriter(joukkueetTiedosto, "UTF-8");
+	            PrintWriter writerPelaajat = new PrintWriter(pelaajatTiedosto, "UTF-8");
 		
-		writerJoukkue.println(";Joukkueet");
-		for(Joukkue joukkue : joukkueet) {
-			writerJoukkue.println(joukkue.getId() + "|" + joukkue.getNimi() + "|");
-			for(Pelaaja pelaaja : joukkue.getPelaajat()) {
-				writerPelaajat.println(pelaaja.toString());
-			}
-		}
-		writerJoukkue.close();
-		writerPelaajat.close();
+	            writerJoukkue.println(";Joukkueet");
+	            for(Joukkue joukkue : joukkueet) {
+	                writerJoukkue.println(joukkue.getId() + "|" + joukkue.getNimi() + "|");
+	                for(Pelaaja pelaaja : joukkue.getPelaajat()) {
+	                    writerPelaajat.println(pelaaja.toString());
+	                }
+	            }
+	            writerJoukkue.close();
+	            writerPelaajat.close();
+	            return true;
+	    } catch (Exception e){
+	        Dialogs.showMessageDialog("Tallennustiedostoa ei l√∂ytynyt " + e.getMessage());
+	        return false;
+	    }
 	}
 	
 
 	/**
-	 * Testip‰‰ohjelma luokalle
-	 * @param args
+	 * Testip√§√§ohjelma luokalle
+	 * @param args ei k√§yt√∂ss√§
 	 */
 	public static void main(String[] args) {
 		Joukkueet testi = new Joukkueet();
